@@ -39,7 +39,7 @@ Er is niets te installeren. De client gebruikt uitsluitend de Python-standaard-
 bibliotheek — geen pip, geen wheels, geen supply chain. Python 3.10 of hoger.
 
 ```bash
-curl -O https://raw.githubusercontent.com/<org>/rechtssysteem-mcp/main/rechtssysteem_mcp.py
+curl -O https://raw.githubusercontent.com/rechtssysteem-ai/rechtssysteem-mcp/main/rechtssysteem_mcp.py
 ```
 
 Vraag een API-sleutel aan op https://rechtssysteem.ai.
@@ -71,7 +71,7 @@ claude mcp add rechtssysteem --scope user \
 | Variabele | Standaard | |
 |---|---|---|
 | `RECHTSSYSTEEM_API_KEY` | — | verplicht |
-| `RECHTSSYSTEEM_API_URL` | `https://api.rechtssysteem.ai` | |
+| `RECHTSSYSTEEM_API_URL` | `https://rechtssysteem.ai/model` | |
 | `RECHTSSYSTEEM_TIMEOUT` | `30` | seconden |
 
 ## Privacy

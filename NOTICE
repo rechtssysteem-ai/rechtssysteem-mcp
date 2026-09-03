@@ -1,0 +1,14 @@
+Rechtssysteem.ai MCP Server (Public Client)
+Copyright 2026 Rechtssysteem.ai
+
+This product includes software developed by Rechtssysteem.ai
+(https://rechtssysteem.ai). Licensed under the Apache License, Version 2.0.
+
+The prediction model, its training data and the leakage-cut rule (R2) are NOT
+covered by this license and are not distributed with this software. They remain
+the property of Rechtssysteem.ai and run on its servers.
+
+TRADEMARK NOTICE:
+"Rechtssysteem.ai" and "rechtssysteem-mcp" are trade names of Rechtssysteem.ai.
+No trademark rights are granted under this license (see Section 6 of the
+Apache License, Version 2.0).

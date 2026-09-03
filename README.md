@@ -71,7 +71,7 @@ claude mcp add rechtssysteem --scope user \
 | Variabele | Standaard | |
 |---|---|---|
 | `RECHTSSYSTEEM_API_KEY` | — | verplicht |
-| `RECHTSSYSTEEM_API_URL` | `https://rechtssysteem.ai/model` | |
+| `RECHTSSYSTEEM_API_URL` | `https://api.rechtssysteem.ai` | |
 | `RECHTSSYSTEEM_TIMEOUT` | `30` | seconden |
 
 ## Privacy

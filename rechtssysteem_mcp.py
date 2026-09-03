@@ -20,7 +20,7 @@ Tools:
 
 Instellen:
     export RECHTSSYSTEEM_API_KEY="je-sleutel"
-    export RECHTSSYSTEEM_API_URL="https://rechtssysteem.ai/model"  # optioneel
+    export RECHTSSYSTEEM_API_URL="https://api.rechtssysteem.ai"  # optioneel
 
 Registreren in Claude Code:
     claude mcp add rechtssysteem --scope user \
@@ -52,7 +52,7 @@ VERSIE = "0.3.0"
 PROTOCOL = "2024-11-05"
 
 API_URL = os.environ.get("RECHTSSYSTEEM_API_URL",
-                         "https://rechtssysteem.ai/model").rstrip("/")
+                         "https://api.rechtssysteem.ai").rstrip("/")
 API_KEY = os.environ.get("RECHTSSYSTEEM_API_KEY", "")
 TIMEOUT = float(os.environ.get("RECHTSSYSTEEM_TIMEOUT", "30"))
 TEKST_CAP = 20_000

@@ -15,7 +15,7 @@ Niet bestemd voor gebruik door of namens een rechterlijke instantie.
 
 Tools:
   voorspel_uitkomst   - oordeel over een Nederlandse zaaktekst (lekkage-vrij)
-  rechtspraak_cijfers - benchmark-cijfers (609.715 zaken)
+  rechtspraak_cijfers - benchmark-cijfers (609.715 zaken), werkt zonder sleutel
   lekkage_check       - meet of een tekst de uitkomst al verraadt
 
 Instellen:
@@ -67,22 +67,21 @@ class ApiFout(Exception):
     """Nette fout die als tool-tekst richting de agent gaat."""
 
 
-def _roep_api(pad, methode="POST", body=None):
+def _roep_api(pad, methode="POST", body=None, vereist_sleutel=True):
     """Praat met de model-API. Geeft dict terug of gooit ApiFout."""
-    if not API_KEY:
+    if vereist_sleutel and not API_KEY:
         raise ApiFout(GEEN_SLEUTEL)
 
     data = None if body is None else json.dumps(body).encode("utf-8")
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "User-Agent": f"{NAAM}/{VERSIE}",
+    }
+    if API_KEY:
+        headers["Authorization"] = f"Bearer {API_KEY}"
     verzoek = urllib.request.Request(
-        f"{API_URL}{pad}",
-        data=data,
-        method=methode,
-        headers={
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": f"{NAAM}/{VERSIE}",
-        },
+        f"{API_URL}{pad}", data=data, method=methode, headers=headers,
     )
     try:
         with urllib.request.urlopen(verzoek, timeout=TIMEOUT) as antwoord:
@@ -137,7 +136,7 @@ def tool_voorspel(args):
 
 
 def tool_cijfers(_args):
-    c = _roep_api("/cijfers", methode="GET")
+    c = _roep_api("/cijfers", methode="GET", vereist_sleutel=False)
 
     def nl(x, cijfers=4):
         """Nederlandse notatie: komma als decimaalteken."""

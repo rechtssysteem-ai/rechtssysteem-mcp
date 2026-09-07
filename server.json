@@ -3,7 +3,7 @@
   "name": "ai.rechtssysteem/rechtssysteem-mcp",
   "title": "Rechtssysteem.ai",
   "description": "Lekkage-vrije voorspelling van Nederlandse rechtszaken, getraind op 609.715 uitspraken",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "websiteUrl": "https://rechtssysteem.ai",
   "repository": {
     "url": "https://github.com/rechtssysteem-ai/rechtssysteem-mcp",

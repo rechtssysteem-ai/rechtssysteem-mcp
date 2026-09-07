@@ -163,7 +163,8 @@ def tool_cijfers(_args):
 
 
 def tool_lekkage(args):
-    uit = _roep_api("/lekkage", body={"tekst": _eis_tekst(args)})
+    uit = _roep_api("/lekkage", body={"tekst": _eis_tekst(args)},
+                    vereist_sleutel=False)
     tekens = f"{uit['tekens']:,}".replace(",", ".")
     regels = [f"tekst: {tekens} tekens"]
     regels.append(

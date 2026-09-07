@@ -42,13 +42,27 @@ bibliotheek — geen pip, geen wheels, geen supply chain. Python 3.10 of hoger.
 curl -O https://raw.githubusercontent.com/rechtssysteem-ai/rechtssysteem-mcp/main/rechtssysteem_mcp.py
 ```
 
-Vraag een API-sleutel aan op https://rechtssysteem.ai.
+## Sleutel
+
+`lekkage_check` en `rechtspraak_cijfers` werken **zonder sleutel**. De meetlat
+hoort controleerbaar te zijn: wie wil nagaan of een dataset of een AI-claim de
+uitkomst al verraadt, moet dat kunnen zonder eerst iets te vragen.
+
+`voorspel_uitkomst` heeft wel een sleutel nodig. Gebruik deze:
+
+```
+242b9a68ddeaf44a53de32590fb6379e13e608397e6a9ed1c82af238ab871ca7
+```
+
+Gedeelde proeftier-sleutel, max 20 verzoeken per minuut, kan wijzigen; betaalde
+sleutels volgen. Hij wordt door iedereen gedeeld, dus de limiet geldt voor het
+geheel. Bij misbruik draaien we hem en komt de nieuwe hier te staan.
 
 ### Claude Code
 
 ```bash
 claude mcp add rechtssysteem --scope user \
-  --env RECHTSSYSTEEM_API_KEY=je-sleutel \
+  --env RECHTSSYSTEEM_API_KEY=242b9a68ddeaf44a53de32590fb6379e13e608397e6a9ed1c82af238ab871ca7 \
   -- python3 /pad/naar/rechtssysteem_mcp.py
 ```
 
@@ -60,7 +74,7 @@ claude mcp add rechtssysteem --scope user \
     "rechtssysteem": {
       "command": "python3",
       "args": ["/pad/naar/rechtssysteem_mcp.py"],
-      "env": { "RECHTSSYSTEEM_API_KEY": "je-sleutel" }
+      "env": { "RECHTSSYSTEEM_API_KEY": "242b9a68ddeaf44a53de32590fb6379e13e608397e6a9ed1c82af238ab871ca7" }
     }
   }
 }
@@ -70,7 +84,7 @@ claude mcp add rechtssysteem --scope user \
 
 | Variabele | Standaard | |
 |---|---|---|
-| `RECHTSSYSTEEM_API_KEY` | — | verplicht |
+| `RECHTSSYSTEEM_API_KEY` | — | alleen voor `voorspel_uitkomst` |
 | `RECHTSSYSTEEM_API_URL` | `https://api.rechtssysteem.ai` | |
 | `RECHTSSYSTEEM_TIMEOUT` | `30` | seconden |
 

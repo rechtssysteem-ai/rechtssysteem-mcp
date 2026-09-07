@@ -48,7 +48,7 @@ import urllib.error
 import urllib.request
 
 NAAM = "rechtssysteem-mcp"
-VERSIE = "0.3.0"
+VERSIE = "0.3.1"
 PROTOCOL = "2024-11-05"
 
 API_URL = os.environ.get("RECHTSSYSTEEM_API_URL",

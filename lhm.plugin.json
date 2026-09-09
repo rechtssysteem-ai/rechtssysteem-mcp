@@ -1,7 +1,7 @@
 {
   "identifier": "rechtssysteem-ai-rechtssysteem-mcp",
   "name": "Rechtssysteem.ai",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Outcome prediction for Dutch court cases, trained on 609,715 rulings, with the outcome leakage measured and cut. 92% of Dutch judgment texts state the outcome verbatim; after cutting those passages 0.1% remains. Accuracy 78.2% against a 43.7% majority baseline (5-fold CV, out-of-fold). lekkage_check and rechtspraak_cijfers need no API key, so anyone can test a dataset or an AI claim for outcome leakage; voorspel_uitkomst uses a shared trial key published in the README. Single-file client, standard library only, no dependencies. Risk indication, not legal advice.",
   "homepage": "https://rechtssysteem.ai",
   "tags": [

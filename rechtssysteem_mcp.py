@@ -48,7 +48,7 @@ import urllib.error
 import urllib.request
 
 NAAM = "rechtssysteem-mcp"
-VERSIE = "0.3.1"
+VERSIE = "0.3.2"
 PROTOCOL = "2024-11-05"
 
 API_URL = os.environ.get("RECHTSSYSTEEM_API_URL",
@@ -186,34 +186,112 @@ HANDLERS = {
     "lekkage_check": tool_lekkage,
 }
 
-_PRIVACY = (" De zaaktekst wordt voor de analyse naar de server van "
+_PRIVACY = ("\nPrivacy: de tekst wordt voor de analyse naar de server van "
             "Rechtssysteem.ai gestuurd; stuur geen tekst die u niet mag delen.")
+
+_CAP = ("Platte tekst, max 20.000 tekens; langere tekst wordt hier geweigerd "
+        "voordat er iets wordt verstuurd.")
 
 TOOLS = [
     {"name": "voorspel_uitkomst",
-     "description": ("Voorspelt de uitkomst van een Nederlandse rechtszaak "
-                     "(afgewezen/gedeeltelijk/toegewezen) uit de zaaktekst. "
-                     "Uitkomst-aankondigende zinnen worden eerst verwijderd "
-                     "(lekkage-vrij). Gemeten 5-fold CV op 609.715 zaken: "
-                     "accuracy 78,2%, macro-F1 77,1%, tegen een "
-                     "meerderheidsbaseline van 43,7%. Zekerheid < 55% = "
-                     "'weet niet'. Risico-indicatie, geen juridisch advies."
+     "description": ("Voorspelt de afloop van een Nederlandse rechtszaak uit "
+                     "de zaaktekst: afgewezen, gedeeltelijk of toegewezen.\n"
+                     "Gebruik dit voor een volledige zaak- of procestekst "
+                     "(dagvaarding, pleitnota, uitspraak), niet voor een "
+                     "samenvatting van een paar zinnen: na het wegknippen "
+                     "moeten er minstens 200 tekens overblijven, anders komt "
+                     "er een fout terug.\n"
+                     "Werkwijze: het dictum en uitkomst-aankondigende zinnen "
+                     "gaan er eerst uit (lekkage-knip R2), het model oordeelt "
+                     "over wat overblijft. Gemeten over 609.715 zaken (5-fold "
+                     "CV): accuracy 78,2%, macro-F1 77,1%, tegen een "
+                     "meerderheidsbaseline van 43,7% — noem die baseline "
+                     "altijd naast de accuracy.\n"
+                     "Geeft terug: label, zekerheid, kansen per klasse en het "
+                     "gebruikte rechtsgebied. Zekerheid onder 55% betekent "
+                     "'weet niet'; presenteer het dan ook zo.\n"
+                     "AI-gegenereerde risico-indicatie op grond van "
+                     "vergelijkbare rechtspraak, geen juridisch advies, niet "
+                     "bestemd voor gebruik door of namens een rechterlijke "
+                     "instantie.\n"
+                     "Vereist RECHTSSYSTEEM_API_KEY in de omgeving van deze "
+                     "MCP-server (max 20 verzoeken per minuut per sleutel); "
+                     "zonder sleutel volgt een fout in plaats van een oordeel."
                      + _PRIVACY),
      "inputSchema": {"type": "object",
-                     "properties": {"tekst": {"type": "string"},
-                                    "rechtsgebied": {"type": "string"}},
-                     "required": ["tekst"]}},
+                     "properties": {
+                         "tekst": {
+                             "type": "string",
+                             "maxLength": TEKST_CAP,
+                             "description": (
+                                 "Volledige Nederlandse zaak- of procestekst. "
+                                 + _CAP + " Dictum en uitkomst-zinnen mogen "
+                                 "erin blijven staan: die worden er aan de "
+                                 "serverkant uitgeknipt.")},
+                         "rechtsgebied": {
+                             "type": "string",
+                             "enum": ["bestuursrecht", "civiel recht",
+                                      "strafrecht", "overig", "onbekend"],
+                             "description": (
+                                 "Optioneel. Zet de rechtsgebied-feature van "
+                                 "het model. Laat weg om het rechtsgebied "
+                                 "door de server uit de tekst te laten "
+                                 "afleiden; dat valt terug op 'onbekend' als "
+                                 "de tekst te weinig houvast geeft.")}},
+                     "required": ["tekst"],
+                     "additionalProperties": False}},
     {"name": "rechtspraak_cijfers",
-     "description": ("Benchmark-cijfers van de Nederlandse rechtspraak-analyse: "
-                     "609.715 zaken, acc 78,2%, macro-F1 77,1%, restlekkage "
-                     "0,1% (was 92% zonder knip), baseline 43,7%."),
-     "inputSchema": {"type": "object", "properties": {}}},
+     "description": ("Geeft de benchmark-cijfers achter voorspel_uitkomst: "
+                     "609.715 zaken, accuracy 78,2%, macro-F1 77,1% (5-fold "
+                     "CV), F1 per klasse, labelverdeling, restlekkage 0,1% na "
+                     "de knip (92% zonder knip) en de meerderheidsbaseline "
+                     "van 43,7%.\n"
+                     "Gebruik dit als iemand vraagt hoe goed het model is, of "
+                     "om een cijfer te controleren voordat je het citeert. De "
+                     "baseline hoort altijd naast de accuracy: zonder die "
+                     "43,7% zegt 78,2% niets.\n"
+                     "Geen parameters, geen sleutel nodig, verstuurt geen "
+                     "tekst."),
+     "inputSchema": {"type": "object", "properties": {},
+                     "additionalProperties": False}},
     {"name": "lekkage_check",
-     "description": ("Meet of een tekst de uitkomst al letterlijk bevat. "
-                     "Controle voor datasets en AI-claims." + _PRIVACY),
+     "description": ("Meet of de overwegingen van een tekst de afloop al "
+                     "prijsgeven — woorden als 'toewijsbaar', 'is ongegrond', "
+                     "'wordt vernietigd', 'bewezen verklaard' — en of daar na "
+                     "de lekkage-knip R2 nog iets van overblijft.\n"
+                     "Gemeten wordt het deel vóór de beslissing: het dictum "
+                     "gaat eruit, samen met de 300 tekens aanloop ervóór, en "
+                     "bij een tekst van 200 tekens of meer zonder "
+                     "beslissingszin geldt het slot als dictum. Onder de 200 "
+                     "tekens wordt er niets weggeknipt en telt de hele tekst "
+                     "mee. 'Schoon' betekent dus: geen uitkomst-taal in het "
+                     "deel dat is overgebleven — geef een volledige uitspraak "
+                     "mee, want bij een kort fragment waarin de beslissing "
+                     "vroeg valt, blijft er niets te meten over.\n"
+                     "Gebruik dit om een dataset, een benchmark of andermans "
+                     "AI-claim te toetsen: 92% van de Nederlandse uitspraken "
+                     "verraadt de afloop woordelijk, waardoor een model dat "
+                     "daarop traint beter lijkt dan het is. Dit is een "
+                     "meting, geen voorspelling; gebruik voorspel_uitkomst "
+                     "als je een oordeel over de afloop wilt.\n"
+                     "Geeft terug: de lengte in tekens, welke categorieën "
+                     "uitkomst-taal ruw zijn gevonden (beroep_uitspraak, "
+                     "bevestiging_vernietiging, civiel_vordering, "
+                     "straf_uitspraak) en welke daarvan na de knip "
+                     "resteren.\n"
+                     "Geen sleutel nodig."
+                     + _PRIVACY),
      "inputSchema": {"type": "object",
-                     "properties": {"tekst": {"type": "string"}},
-                     "required": ["tekst"]}},
+                     "properties": {
+                         "tekst": {
+                             "type": "string",
+                             "maxLength": TEKST_CAP,
+                             "description": (
+                                 "Nederlandse tekst om te meten, meestal een "
+                                 "uitspraak of een trainingsvoorbeeld. "
+                                 + _CAP)}},
+                     "required": ["tekst"],
+                     "additionalProperties": False}},
 ]
 
 

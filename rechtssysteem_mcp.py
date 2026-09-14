@@ -48,7 +48,7 @@ import urllib.error
 import urllib.request
 
 NAAM = "rechtssysteem-mcp"
-VERSIE = "0.3.2"
+VERSIE = "0.3.3"
 PROTOCOL = "2024-11-05"
 
 API_URL = os.environ.get("RECHTSSYSTEEM_API_URL",
@@ -349,5 +349,59 @@ def main():
     return 0
 
 
+def main_http(port=8000):
+    """Streamable-HTTP transport (voor registers zoals Glama): zelfde afhandel(), over HTTP."""
+    import http.server
+
+    class _Handler(http.server.BaseHTTPRequestHandler):
+        server_version = NAAM + "/" + VERSIE
+
+        def _json(self, code, payload):
+            data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+        def do_POST(self):
+            try:
+                lengte = int(self.headers.get("Content-Length") or 0)
+                if lengte <= 0:
+                    raise ValueError("leeg")
+                msg = json.loads(self.rfile.read(lengte).decode("utf-8"))
+            except Exception:
+                self._json(400, {"jsonrpc": "2.0", "id": None,
+                                 "error": {"code": -32700, "message": "parse error"}})
+                return
+            antwoord = afhandel(msg)
+            if antwoord is None:
+                self.send_response(202)
+                self.end_headers()
+                return
+            self._json(200, antwoord)
+
+        def do_GET(self):
+            self._json(405, {"jsonrpc": "2.0", "id": None,
+                             "error": {"code": -32601, "message": "method not allowed"}})
+
+        def log_message(self, *args):
+            pass
+
+    srv = http.server.ThreadingHTTPServer(("0.0.0.0", port), _Handler)
+    sys.stderr.write("rechtssysteem-mcp streamable-http op 0.0.0.0:%d\n" % port)
+    srv.serve_forever()
+    return 0
+
+
 if __name__ == "__main__":
+    args = sys.argv[1:]
+    if "http" in args or "--http" in args:
+        port = int(os.environ.get("PORT", "8000"))
+        if "--port" in args:
+            try:
+                port = int(args[args.index("--port") + 1])
+            except (IndexError, ValueError):
+                pass
+        sys.exit(main_http(port))
     sys.exit(main())

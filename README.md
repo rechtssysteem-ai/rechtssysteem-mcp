@@ -38,11 +38,27 @@ De baseline staat er met opzet bij. 78,2% zegt niets zonder die 43,7% ernaast.
 
 ## Installeren
 
-Er is niets te installeren. De client gebruikt uitsluitend de Python-standaard-
-bibliotheek — geen pip, geen wheels, geen supply chain. Python 3.10 of hoger.
+De client gebruikt uitsluitend de Python-standaardbibliotheek: geen externe
+pakketten, geen supply chain. Python 3.10 of hoger.
+
+Via PyPI, zonder iets te beheren:
+
+```bash
+uvx rechtssysteem-mcp
+```
+
+Of met pipx:
+
+```bash
+pipx install rechtssysteem-mcp
+rechtssysteem-mcp
+```
+
+Of één bestand, zonder pakketbeheer:
 
 ```bash
 curl -O https://raw.githubusercontent.com/rechtssysteem-ai/rechtssysteem-mcp/main/rechtssysteem_mcp.py
+python3 rechtssysteem_mcp.py
 ```
 
 ## Sleutel

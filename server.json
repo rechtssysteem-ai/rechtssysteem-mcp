@@ -2,11 +2,40 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.rechtssysteem/rechtssysteem-mcp",
   "title": "Rechtssysteem.ai",
-  "description": "Lekkage-vrije voorspelling van Nederlandse rechtszaken, getraind op 609.715 uitspraken",
+  "description": "Lekkage-vrije voorspelling van Nederlandse rechtszaken, getraind op 609.715 uitspraken. Accuracy 78,2% tegen een baseline van 43,7%; 0,1% restlekkage na het wegknippen van uitkomstverradende zinnen. Twee van de drie tools werken zonder sleutel.",
   "version": "0.3.3",
   "websiteUrl": "https://rechtssysteem.ai",
   "repository": {
     "url": "https://github.com/rechtssysteem-ai/rechtssysteem-mcp",
     "source": "github"
-  }
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "rechtssysteem-mcp",
+      "version": "0.3.3",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "RECHTSSYSTEEM_API_KEY",
+          "description": "Key for voorspel_uitkomst only. rechtspraak_cijfers and lekkage_check answer without it.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "RECHTSSYSTEEM_API_URL",
+          "description": "Optional. Defaults to https://api.rechtssysteem.ai.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string",
+          "default": "https://api.rechtssysteem.ai"
+        }
+      ]
+    }
+  ]
 }

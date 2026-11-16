@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rechtssysteem-mcp"
+version = "0.3.3"
+description = "MCP server for leak-free prediction of Dutch court cases, trained on 609,715 rulings"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "The Coppola Connection", email = "info@rechtssysteem.ai" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "legal",
+    "rechtspraak",
+    "dutch-law",
+    "benchmark",
+    "data-leakage",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Legal Industry",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+http = []
+
+[project.urls]
+Homepage = "https://rechtssysteem.ai"
+Benchmark = "https://rechtssysteem.ai/benchmark"
+Repository = "https://github.com/rechtssysteem-ai/rechtssysteem-mcp"
+Issues = "https://github.com/rechtssysteem-ai/rechtssysteem-mcp/issues"
+
+[project.scripts]
+rechtssysteem-mcp = "rechtssysteem_mcp:main"
+rechtssysteem-mcp-http = "rechtssysteem_mcp:main_http"
+
+[tool.setuptools]
+py-modules = ["rechtssysteem_mcp"]

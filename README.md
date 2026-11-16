@@ -1,6 +1,7 @@
 # rechtssysteem-mcp
 
 [![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rechtssysteem-ai/rechtssysteem-mcp)
+[![Rechtssysteem.ai MCP server](https://mcprush.com/badge/rechtssysteem-ai-mcp/card.svg)](https://mcprush.com/to/rechtssysteem-ai-mcp?ref=badge)
 
 Een MCP-server die AI-agents toegang geeft tot een **eerlijke** voorspelling van
 Nederlandse rechtszaken: het model heeft de uitkomst nooit gezien.
